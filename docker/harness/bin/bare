@@ -1,0 +1,69 @@
+#!/usr/bin/env php
+<?php
+
+/*
+ * Omnifilm in plain PHP: no bundle, no container, no framework. A registry
+ * of one provider answering from works it holds; a search, a work found by
+ * its IMDb number, a season's episodes, where to watch; then a provider's
+ * JSON call answered with no network (a record, a 404, an error whose
+ * message keeps the key out). Prints what happened and every class and file
+ * PHP loaded, as JSON.
+ */
+
+use Omnifilm\Exception\ProviderException;
+use Omnifilm\Http\JsonClient;
+use Omnifilm\Model\Credit;
+use Omnifilm\Model\Identifiers;
+use Omnifilm\Model\Image;
+use Omnifilm\Model\ImageKind;
+use Omnifilm\Model\Offer;
+use Omnifilm\Model\OfferKind;
+use Omnifilm\Model\Query;
+use Omnifilm\Model\Role;
+use Omnifilm\Model\Work;
+use Omnifilm\Model\WorkRef;
+use Omnifilm\Model\WorkType;
+use Omnifilm\Registry;
+use Omnifilm\Testing\FixedProviderFactory;
+use Omnifilm\Testing\RecordedHttpClient;
+
+require getenv('OMNIFILM_AUTOLOAD') ?: '/harness/vendor/autoload.php';
+
+$peaks = Identifiers::of(['imdb' => 'tt0098936', 'tvdb' => 70533]);
+$works = [
+    new Work(WorkType::Movie, 'Stalker', Identifiers::of(['imdb' => 'tt0079944', 'wikidata' => 'Q200437']), 'fixed', originalTitle: 'Сталкер', year: 1979, released: new DateTimeImmutable('1979-05-25'), runtime: 162, genres: ['Science fiction', 'Drama'], images: [new Image(ImageKind::Poster, 'https://example.org/stalker.jpg', 500, 750)], credits: [new Credit('Andrei Tarkovsky', Role::Director), new Credit('Alexander Kaidanovsky', Role::Cast, 'Stalker', 0)]),
+    new Work(WorkType::Series, 'Twin Peaks', $peaks, 'fixed', year: 1990, season: 2),
+    new Work(WorkType::Episode, 'Traces to Nowhere', Identifiers::none(), 'fixed', series: $peaks, season: 1, number: 2),
+    new Work(WorkType::Episode, 'Pilot', Identifiers::none(), 'fixed', series: $peaks, season: 1, number: 1),
+];
+$registry = new Registry([new FixedProviderFactory($works, ['movie:imdb:tt0079944' => ['FR' => [new Offer(OfferKind::Stream, 'Example Films', 'FR', 'https://example.org/stalker')]]])], [
+    'films' => ['factory' => 'fixed'],
+]);
+
+$report['capabilities'] = $registry->get('films')->capabilities()->toArray();
+$report['search'] = array_map(static fn (Work $work) => $work->title, $registry->search('films')->search(new Query('stalk', WorkType::Movie)));
+$work = $registry->work(WorkRef::imdb('tt0079944'));
+$report['work'] = $work?->toArray();
+$report['directors'] = array_map(static fn (Credit $credit) => $credit->name, $work?->credits(Role::Director) ?? []);
+$report['episodes'] = array_map(static fn (Work $episode) => [$episode->number, $episode->title], $registry->episodes('films')->episodes(WorkRef::tvdb(70533), 1));
+$report['offers'] = array_map(static fn (Offer $offer) => $offer->toArray(), $registry->availability('films')->offers(WorkRef::imdb('tt0079944'), 'fr'));
+
+$http = RecordedHttpClient::routes([
+    '~^GET https://api\.example\.org/works/1~' => [200, '{"title": "Stalker", "release": {"date": "1979-05-25"}, "cast": [{"name": "Anatoly Solonitsyn"}, "not an object"]}'],
+    '~^GET https://api\.example\.org/works/3~' => [500, '<h1>Internal error</h1>'],
+]);
+$json = new JsonClient($http, 'Example', ['User-Agent' => 'omnifilm-bare/1.0']);
+$data = $json->get('https://api.example.org/works/1', ['key' => 'not-a-real-key']);
+$report['json'] = [$data?->string('title'), $data?->date('release.date')?->format('Y'), $data?->strings('cast', 'name'), $http->header('User-Agent')];
+$report['json-404'] = $json->get('https://api.example.org/works/2');
+try {
+    $json->get('https://api.example.org/works/3', ['key' => 'not-a-real-key']);
+} catch (ProviderException $e) {
+    $report['json-error'] = $e->getMessage();
+}
+
+echo json_encode($report + ['loaded' => [
+    'symbols' => [...get_declared_classes(), ...get_declared_interfaces(), ...get_declared_traits()],
+    'files' => array_map('realpath', get_included_files()),
+    'eager' => array_map('realpath', array_values(is_file($f = dirname((string) (new ReflectionClass(Composer\Autoload\ClassLoader::class))->getFileName()).'/autoload_files.php') ? require $f : [])),
+]], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT), "\n";

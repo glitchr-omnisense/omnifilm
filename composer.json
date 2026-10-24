@@ -1,0 +1,54 @@
+{
+    "name": "omniscient/omnifilm",
+    "type": "library",
+    "description": "Omnifilm: the record of a film, a series or an episode under any PHP host, whoever keeps it - titles, dates, cast and crew, pictures, identifiers across registers (IMDb, TMDB, TheTVDB, Trakt, Wikidata), a season's episodes and where to watch, behind contracts by capability. Providers are packages of their own (omnifilm/tmdb, omnifilm/omdb, omnifilm/tvdb, omnifilm/trakt, omnifilm/wikidata); the Symfony and Laravel bridges live in omnibridge.",
+    "keywords": ["film", "movie", "tv", "series", "episode", "filmography", "tmdb", "imdb", "wikidata", "framework-agnostic", "omnifilm"],
+    "homepage": "https://github.com/glitchr-studio/omnifilm",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Marco Meyer",
+            "email": "marco.meyer@glitchr.io"
+        }
+    ],
+    "require": {
+        "php": ">=8.2",
+        "symfony/http-client-contracts": "^3.0"
+    },
+    "require-dev": {
+        "phpstan/phpstan": "^2.1",
+        "phpunit/phpunit": "^11.0",
+        "symfony/http-client": "^6.4|^7.0|^8.0"
+    },
+    "suggest": {
+        "omnifilm/tmdb": "The Movie Database: search, records with cast and pictures, episodes, where to watch (JustWatch's data)",
+        "omnifilm/omdb": "OMDb: records by IMDb number with IMDb, Rotten Tomatoes and Metacritic ratings",
+        "omnifilm/tvdb": "TheTVDB: series and their episodes, films",
+        "omnifilm/trakt": "Trakt: records and episodes, identifiers across registers",
+        "omnifilm/wikidata": "Wikidata: open records (CC0) and identifiers across registers, no key",
+        "omniscient/omnibridge": "The host contracts; omnibridge/symfony and omnibridge/laravel wire omnifilm into their host when a site needs it"
+    },
+    "autoload": {
+        "psr-4": {
+            "Omnifilm\\": ""
+        },
+        "exclude-from-classmap": [
+            "/Tests/",
+            "/docker/",
+            "/bin/"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Omnifilm\\Tests\\": "Tests/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-1.x": "1.x-dev"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    }
+}
