@@ -1,7 +1,7 @@
 # Writing a provider
 
 A provider is a package `omnifilm/<name>`, namespace `Omnifilm\<Name>\`, requiring
-`omniscient/omnifilm` and `symfony/http-client` (or the library it wraps, which must be
+`omnisense/omnifilm` and `symfony/http-client` (or the library it wraps, which must be
 framework-free).
 
 1. **The factory** extends `ProviderFactory`: `populate()` sets `omnifilm.factory_name`,

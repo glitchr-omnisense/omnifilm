@@ -1,4 +1,4 @@
-# omniscient/omnifilm
+# omnisense/omnifilm
 
 The record of a film, a series or an episode, under any PHP host, whoever keeps it: titles, dates,
 cast and crew, pictures, identifiers across registers (IMDb, TMDB, TheTVDB, Trakt, Wikidata), a
@@ -51,11 +51,11 @@ Plain PHP: no container, no framework. The core requires only `symfony/http-clie
 
 | Package | Search | Lookup by | Episodes | Where to watch | Key |
 |---|---|---|---|---|---|
-| [omnifilm/tmdb](https://github.com/glitchr-studio/omnifilm-tmdb) (over php-tmdb/api) | yes | tmdb, imdb, tvdb, wikidata | yes | yes (JustWatch's data) | token or API key |
-| [omnifilm/omdb](https://github.com/glitchr-studio/omnifilm-omdb) | yes | imdb | yes | - | API key |
-| [omnifilm/tvdb](https://github.com/glitchr-studio/omnifilm-tvdb) | yes | tvdb, imdb, tmdb | yes | - | project key (+ PIN) |
-| [omnifilm/trakt](https://github.com/glitchr-studio/omnifilm-trakt) | yes | trakt, imdb, tmdb, tvdb | yes | - | client id |
-| [omnifilm/wikidata](https://github.com/glitchr-studio/omnifilm-wikidata) | yes | wikidata, imdb, tmdb, tvdb | - | - | none |
+| [omnifilm/tmdb](https://github.com/glitchr-omnisense/omnifilm-tmdb) (over php-tmdb/api) | yes | tmdb, imdb, tvdb, wikidata | yes | yes (JustWatch's data) | token or API key |
+| [omnifilm/omdb](https://github.com/glitchr-omnisense/omnifilm-omdb) | yes | imdb | yes | - | API key |
+| [omnifilm/tvdb](https://github.com/glitchr-omnisense/omnifilm-tvdb) | yes | tvdb, imdb, tmdb | yes | - | project key (+ PIN) |
+| [omnifilm/trakt](https://github.com/glitchr-omnisense/omnifilm-trakt) | yes | trakt, imdb, tmdb, tvdb | yes | - | client id |
+| [omnifilm/wikidata](https://github.com/glitchr-omnisense/omnifilm-wikidata) | yes | wikidata, imdb, tmdb, tvdb | - | - | none |
 
 Writing one: [docs/providers.md](docs/providers.md). The harness: [docs/harness.md](docs/harness.md).
 The Symfony and Laravel wiring will live in omnibridge when a site needs it.
@@ -75,7 +75,7 @@ The Symfony and Laravel wiring will live in omnibridge when a site needs it.
 
 ## Responsibility
 
-`omniscient/omnifilm` and its `omnifilm/*` providers are independent, unofficial clients: none is
+`omnisense/omnifilm` and its `omnifilm/*` providers are independent, unofficial clients: none is
 affiliated with, endorsed by or sponsored by the services it reaches. Each service keeps its own
 terms (accounts and keys, rate limits, commercial or non-commercial use, caching, attribution),
 named with a link in the README of each provider. The MIT licence covers this code only and grants

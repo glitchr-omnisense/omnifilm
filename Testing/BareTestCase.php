@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * The check every package of the family runs: each of its classes loaded in
  * a PHP process of its own (this one has loaded PHPUnit), with nothing from
- * outside but omniscient/omnifilm and what the package requires - no
+ * outside but omnisense/omnifilm and what the package requires - no
  * framework, no HTTP client, no application, even in the harness where they
  * are installed beside it. A package names its entry class and the Composer
  * packages it requires; FOREIGN lists what may never load,
@@ -98,7 +98,7 @@ abstract class BareTestCase extends TestCase
     }
 
     /**
-     * The files loaded from outside the package, omniscient/omnifilm and the
+     * The files loaded from outside the package, omnisense/omnifilm and the
      * packages required - and those Composer includes for every package at
      * start (autoload "files").
      *

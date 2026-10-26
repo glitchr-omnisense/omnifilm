@@ -7,7 +7,7 @@ use Omnifilm\Registry;
 use Omnifilm\Testing\BareTestCase;
 
 /**
- * omniscient/omnifilm with no framework: the harness's bare script searches,
+ * omnisense/omnifilm with no framework: the harness's bare script searches,
  * looks up, lists episodes and offers, and makes a provider's JSON call,
  * in a PHP process of its own - nothing may load from outside the package
  * but Symfony's HTTP client contracts (interfaces only).

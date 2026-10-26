@@ -1,9 +1,9 @@
 {
-    "name": "omniscient/omnifilm",
+    "name": "omnisense/omnifilm",
     "type": "library",
     "description": "Omnifilm: the record of a film, a series or an episode under any PHP host, whoever keeps it - titles, dates, cast and crew, pictures, identifiers across registers (IMDb, TMDB, TheTVDB, Trakt, Wikidata), a season's episodes and where to watch, behind contracts by capability. Providers are packages of their own (omnifilm/tmdb, omnifilm/omdb, omnifilm/tvdb, omnifilm/trakt, omnifilm/wikidata); the Symfony and Laravel bridges live in omnibridge.",
     "keywords": ["film", "movie", "tv", "series", "episode", "filmography", "tmdb", "imdb", "wikidata", "framework-agnostic", "omnifilm"],
-    "homepage": "https://github.com/glitchr-studio/omnifilm",
+    "homepage": "https://github.com/glitchr-omnisense/omnifilm",
     "license": "MIT",
     "authors": [
         {
@@ -26,7 +26,10 @@
         "omnifilm/tvdb": "TheTVDB: series and their episodes, films",
         "omnifilm/trakt": "Trakt: records and episodes, identifiers across registers",
         "omnifilm/wikidata": "Wikidata: open records (CC0) and identifiers across registers, no key",
-        "omniscient/omnibridge": "The host contracts; omnibridge/symfony and omnibridge/laravel wire omnifilm into their host when a site needs it"
+        "omnisense/omnibridge": "The host contracts; omnibridge/symfony and omnibridge/laravel wire omnifilm into their host when a site needs it"
+    },
+    "replace": {
+        "omniscient/omnifilm": "self.version"
     },
     "autoload": {
         "psr-4": {
