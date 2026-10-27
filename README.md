@@ -57,8 +57,23 @@ Plain PHP: no container, no framework. The core requires only `symfony/http-clie
 | [omnifilm/trakt](https://github.com/glitchr-omnisense/omnifilm-trakt) | yes | trakt, imdb, tmdb, tvdb | yes | - | client id |
 | [omnifilm/wikidata](https://github.com/glitchr-omnisense/omnifilm-wikidata) | yes | wikidata, imdb, tmdb, tvdb | - | - | none |
 
-Writing one: [docs/providers.md](docs/providers.md). The harness: [docs/harness.md](docs/harness.md).
 The Symfony and Laravel wiring will live in omnibridge when a site needs it.
+
+## Documentation
+
+The manual, in `docs/`:
+
+- [Overview and providers](docs/index.md)
+- [Installation, in plain PHP](docs/installation.md)
+- [Symfony](docs/symfony.md) and [Laravel](docs/laravel.md)
+- [Models](docs/models.md): contracts, capabilities, the registry, every model and enum
+- Usage: [search](docs/usage-search.md), [records and identifiers](docs/usage-lookup.md), [episodes](docs/usage-episodes.md), [where to watch](docs/usage-availability.md)
+- [Configuration reference](docs/configuration.md)
+- [Errors](docs/errors.md)
+- [Testing](docs/testing.md)
+- [The harness](docs/harness.md)
+- [Writing a provider](docs/providers.md)
+- [Verified, and not](docs/verified.md)
 
 ## Verified, and not
 
