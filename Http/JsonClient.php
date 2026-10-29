@@ -57,11 +57,11 @@ final class JsonClient
             throw Redaction::withoutArguments(new UnreachableException(\sprintf('%s could not be reached for %s: %s', $this->provider, $what, self::reason($e->getMessage())), 0, Redaction::copy($e, Redaction::secrets($url, $options))));
         }
         if ($status >= 400) {
-            throw ProviderException::answered($this->provider, $what, $status, $body);
+            throw Redaction::withoutArguments(ProviderException::answered($this->provider, $what, $status, Redaction::text($body, Redaction::secrets($url, $options))));
         }
         $data = json_decode($body, true);
 
-        return \is_array($data) ? new Data($data) : throw ProviderException::answered($this->provider, $what, $status, 'The body is not JSON.');
+        return \is_array($data) ? new Data($data) : throw Redaction::withoutArguments(ProviderException::answered($this->provider, $what, $status, 'The body is not JSON.'));
     }
 
     /**

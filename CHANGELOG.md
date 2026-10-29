@@ -3,6 +3,10 @@
 ## Unreleased (1.x)
 
 ### Fixed
+- No exception `JsonClient::request()` throws keeps its trace's arguments: an error answered (a refused key,
+  nothing there, a server error, a body that is not JSON) kept the request's options - the query,
+  headers and token with the key - in its trace (`zend.exception_ignore_args` off), as the
+  `UnreachableException` did before its fix.
 - An `UnreachableException`'s chain no longer holds the key. Its previous exception was the HTTP
   client's own, whose message quotes the whole URL (OMDb's `apikey=`, TMDB's `api_key=`), and
   every trace kept the arguments of the calls under it, the request's query and headers among
