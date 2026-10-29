@@ -13,7 +13,10 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
  * any other error status as a ProviderException naming the path only (never
  * the query, where a key may sit), a network failure as an
  * UnreachableException naming the path only too, with the HTTP client's
- * reason without the address it quotes (reason()).
+ * reason without the address it quotes (reason()). Its previous exception is
+ * a copy of the client's (Redaction::copy(): same class and code, the key
+ * masked in its message), and neither keeps its trace's arguments, where the
+ * request's query and headers stood.
  */
 final class JsonClient
 {
@@ -42,15 +45,16 @@ final class JsonClient
     public function request(string $method, string $url, array $options = [], array $headers = []): ?Data
     {
         $what = $method.' '.(parse_url($url, \PHP_URL_PATH) ?: '/');
+        $options = ['headers' => $headers + $this->headers] + $options;
         try {
-            $response = $this->http->request($method, $url, ['headers' => $headers + $this->headers] + $options);
+            $response = $this->http->request($method, $url, $options);
             $status = $response->getStatusCode();
             if (404 === $status) {
                 return null;
             }
             $body = $response->getContent(false);
         } catch (ExceptionInterface $e) {
-            throw new UnreachableException(\sprintf('%s could not be reached for %s: %s', $this->provider, $what, self::reason($e->getMessage())), 0, $e);
+            throw Redaction::withoutArguments(new UnreachableException(\sprintf('%s could not be reached for %s: %s', $this->provider, $what, self::reason($e->getMessage())), 0, Redaction::copy($e, Redaction::secrets($url, $options))));
         }
         if ($status >= 400) {
             throw ProviderException::answered($this->provider, $what, $status, $body);

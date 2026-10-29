@@ -84,4 +84,39 @@ final class JsonClientTest extends TestCase
             self::assertStringNotContainsString('secret-omdb-key', $e->getMessage());
         }
     }
+
+    /**
+     * Nothing of the key anywhere in what a log of the whole chain writes: the messages, the
+     * previous exception's (a copy of the HTTP client's, its class and code kept, the key's
+     * parameter masked), and the traces' arguments, which PHP keeps unless
+     * zend.exception_ignore_args is on.
+     */
+    public function testNoPartOfAnUnreachableChainHoldsTheKey(): void
+    {
+        $ignoreArgs = ini_set('zend.exception_ignore_args', '0');
+        $http = new MockHttpClient(static function (string $method, string $url): never {
+            throw new TransportException(\sprintf('Could not resolve host: api.example.org for "%s".', $url), 6);
+        });
+
+        try {
+            (new JsonClient($http, 'Example', ['Authorization' => 'Bearer bearer-secret-token']))->get('https://api.example.org/search', ['api_key' => 'secret-film-key', 'query' => 'Stalker']);
+            self::fail('no exception');
+        } catch (UnreachableException $e) {
+            $previous = $e->getPrevious();
+            self::assertInstanceOf(TransportException::class, $previous);
+            self::assertSame(6, $previous->getCode());
+            self::assertStringContainsString('api_key=***', $previous->getMessage());
+            self::assertNotEmpty($e->getTrace());
+            for ($one = $e; null !== $one; $one = $one->getPrevious()) {
+                foreach (['secret-film-key', 'bearer-secret-token'] as $secret) {
+                    self::assertStringNotContainsString($secret, $one->getMessage());
+                    self::assertStringNotContainsString($secret, print_r($one->getTrace(), true));
+                    self::assertStringNotContainsString($secret, $one->getTraceAsString());
+                }
+            }
+            self::assertStringNotContainsString('secret-film-key', (string) $e);
+        } finally {
+            ini_set('zend.exception_ignore_args', false !== $ignoreArgs ? $ignoreArgs : '1');
+        }
+    }
 }

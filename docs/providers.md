@@ -22,7 +22,9 @@ framework-free).
    answers are read with `Http\Data` (`string()`, `int()`, `date()`, `list()`, `strings()`), so
    PHPStan at its highest level holds without trusting the provider's JSON. A key goes in a header
    when the service accepts one: messages leave the query out ([Errors](errors.md#the-messages)),
-   logs of the HTTP client and the previous exception do not.
+   and so does the exception chain, but the HTTP client's own logs do not. A provider that calls
+   its own library wraps its failure as `JsonClient` does: `Redaction::withoutArguments(new
+   UnreachableException(..., 0, Redaction::copy($e, Redaction::secrets($url, $options))))`.
 4. **Tests**: recorded answers in `Tests/Fixtures` (captured from the service when it needs no
    key, trimmed; written after its reference otherwise, and said so), a `BareTest` extending
    `Testing\BareTestCase`, a `LiveTest` in the group `live` for a keyless service only.
