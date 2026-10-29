@@ -54,13 +54,7 @@ There is no conformance suite shared by the providers: each tests its own mappin
 
 ## Known defects
 
-Listed where the behaviour is described, and in the family's defects list:
-
-- OMDb's "Too many results." is a `ProviderException`, not an empty search
-  ([Search](usage-search.md#edge-cases)).
-- TMDB's `attribution` is not the wording TMDB's terms ask for ([Models](models.md#capabilities)).
-- `ProviderException` calls `mb_substr()`, and no package requires `ext-mbstring`
-  ([Installation](installation.md#requirements)).
+None left: those the manuals found were fixed on 2026-10-29.
 
 ## Responsibility
 

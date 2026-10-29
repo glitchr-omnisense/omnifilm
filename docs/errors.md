@@ -27,7 +27,6 @@ Seen in the [harness](harness.md) on 2026-10-26, the network ones in a container
 omdb network       UnreachableException: OMDb could not be reached for GET /: Could not resolve host: www.omdbapi.com (Could not contact DNS servers).
 tmdb network       UnreachableException: TMDB could not be reached for GET /3/movie/603: Could not resolve host: api.themoviedb.org (Could not contact DNS servers).
 trakt network      UnreachableException: Trakt could not be reached for GET /movies/481: Could not resolve host: api.trakt.tv (Could not contact DNS servers).
-omdb too many      ProviderException: OMDb answered an error for GET /. Too many results.
 omdb bad key       ProviderException: OMDb answered 401 for GET /. {"Response":"False","Error":"Invalid API key!"}
 omdb limit         ProviderException: OMDb answered 401 for GET /. {"Response":"False","Error":"Request limit reached!"}
 omdb html 503      ProviderException: OMDb answered 503 for GET /. Service Unavailable
@@ -45,6 +44,9 @@ registry avail     NotSupportedException: The "o" provider (Omnifilm\Omdb\OmdbPr
 registry none      InvalidConfigException: No "x" film provider; configured: o.
 ```
 
+The run also had `omdb too many`, OMDb's "Too many results." as a `ProviderException`; since
+2026-10-29 it is an empty search (`[]`).
+
 A `ProviderException` names the provider, the status (or what stood for it: `an error`, `maxlag`,
 `no token`), the method and the path, then the answer's text: tags stripped, at most 300
 characters. Its code is 0: the status is in the message only. The path never carries the query, so
@@ -60,7 +62,7 @@ that writes the whole chain writes it too.
 | Where | Catch |
 |---|---|
 | a page showing a record | `OmnifilmException`: show what the application kept, or the title alone; log the message privately |
-| a search box | `ProviderException` around OMDb (too many results), `InvalidArgumentException` for an empty query |
+| a search box | `InvalidArgumentException` for an empty query; `ProviderException` for a provider that refuses (OMDb's daily limit) |
 | a chain of providers (`Registry::work()`) | an exception of one provider ends the chain: catch around each provider's `work()` to go on to the next |
 | a batch import | `UnreachableException`, and `ProviderException` for a 429 or 5xx or Wikidata's `maxlag`: wait and retry; a 401: the key, to fix |
 | building the registry, a deploy | `InvalidConfigException`: a configuration error, to fix, not to retry |

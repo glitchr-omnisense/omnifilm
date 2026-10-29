@@ -48,15 +48,8 @@ animated, mini, web, anime series): an item that is none of them is not found.
 ## Edge cases
 
 - No match is `[]` everywhere.
-- OMDb answers a query matching too many titles with an error, which becomes a
-  `ProviderException`:
-
-> [!WARNING]
-> Known defect: OMDb's `"Response": "False"` with `"Error": "Too many results."` (a one-letter or
-> very common word) throws `ProviderException` (`OMDb answered an error for GET /. Too many
-> results.`, seen on a recorded answer in the harness, 2026-10-26), where its README says only a
-> wrong key or the daily limit are errors and an empty search is expected. Catch it around OMDb
-> searches typed by visitors.
+- OMDb answers a query matching too many titles (a one-letter or very common word) with `"Error":
+  "Too many results."`: an empty search, `[]`.
 
 - The words are sent as typed: what matches is the provider's search engine's business (TMDB's,
   OMDb's, TheTVDB's, Trakt's, Wikidata's CirrusSearch), not Omnifilm's.

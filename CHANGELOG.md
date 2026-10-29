@@ -9,4 +9,6 @@
   stood in the message.
 
 ### Added
+- `ext-mbstring` in `composer.json`'s requirements: `ProviderException` shortens error bodies with
+  `mb_substr()`, which a PHP built without mbstring did not have (no test: a requirement).
 - `Omnifilm\Http\JsonClient::reason()`: an HTTP client's message without the addresses it quotes.

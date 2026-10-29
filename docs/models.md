@@ -58,17 +58,11 @@ The attribution each provider declares:
 
 | Provider | `attribution` |
 |---|---|
-| tmdb | `This product uses the TMDB API but is not endorsed or certified by TMDB. Where to watch: data from JustWatch.` |
+| tmdb | `This product uses TMDB and the TMDB APIs but is not endorsed, certified, or otherwise approved by TMDB. Where to watch: data from JustWatch.` (with TMDB's logo, as its terms ask) |
 | omdb | `Data from OMDb (omdbapi.com), CC BY-NC 4.0` |
 | tvdb | `Metadata provided by TheTVDB (thetvdb.com). Please consider adding missing information or subscribing.` |
 | trakt | `Data from Trakt (trakt.tv)` |
 | wikidata | `Data from Wikidata (CC0); pictures from Wikimedia Commons under their own licences` |
-
-> [!WARNING]
-> Known defect: TMDB's `attribution` reads "uses the TMDB API but is not endorsed or certified by
-> TMDB", where the terms the package's README quotes ask for "uses TMDB and the TMDB APIs but is
-> not endorsed, certified, or otherwise approved by TMDB", with TMDB's logo. Show the terms'
-> wording, not the string, until it is corrected.
 
 ## Factory and Config
 

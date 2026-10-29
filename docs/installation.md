@@ -12,7 +12,8 @@ composer require omnisense/omnifilm omnifilm/wikidata     # one package per prov
 ## Requirements
 
 - PHP 8.2 or later.
-- `omnisense/omnifilm` requires `symfony/http-client-contracts` (^3.0) and nothing else.
+- `omnisense/omnifilm` requires `symfony/http-client-contracts` (^3.0) and PHP's `mbstring`
+  extension (`ext-mbstring`: the core shortens error bodies with `mb_substr()`), nothing else.
 - Every provider requires `symfony/http-client` (^6.4, ^7.0 or ^8.0), a library that stands alone
   and loads no framework: its factory takes the application's client
   (`Symfony\Contracts\HttpClient\HttpClientInterface`) and, given none, makes its own
@@ -21,12 +22,8 @@ composer require omnisense/omnifilm omnifilm/wikidata     # one package per prov
   `psr/event-dispatcher` (^1.0): it runs php-tmdb's client over the same HTTP client. php-tmdb
   requires `php-http/discovery`, a Composer plugin it does not need here:
   `"allow-plugins": {"php-http/discovery": false}` in the application's `composer.json`.
-- PHP's `mbstring` extension, present in most builds.
-
-> [!WARNING]
-> Known defect: the core calls `mb_substr()` when it shortens an error body
-> (`Exception/ProviderException.php`), where `composer.json` requires no `ext-mbstring` nor a
-> polyfill: on a PHP built without it, an error answered by a provider ends in a fatal error.
+- PHP's `mbstring` extension, present in most builds: Composer refuses to install on a PHP without
+  it.
 
 Omnifilm runs the same in plain PHP, in a worker, in Laravel and in Symfony; there is no bundle or
 Laravel provider yet ([Symfony](symfony.md), [Laravel](laravel.md)).
