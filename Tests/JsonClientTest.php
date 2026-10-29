@@ -65,4 +65,23 @@ final class JsonClientTest extends TestCase
         $this->expectException(UnreachableException::class);
         (new JsonClient(new MockHttpClient(static fn () => throw new TransportException('Could not resolve host')), 'Example'))->get('https://api.example.org/ok');
     }
+
+    /**
+     * Not reached: the message names the method and the path, and the HTTP client's reason
+     * without its address - Symfony's transport messages quote the URL, query and key included.
+     */
+    public function testAnUnreachableProviderIsNamedByItsPathNeverItsQuery(): void
+    {
+        $http = new MockHttpClient(static function (string $method, string $url): never {
+            throw new TransportException(\sprintf('Could not resolve host: www.omdbapi.com for "%s".', $url));
+        });
+
+        try {
+            (new JsonClient($http, 'OMDb'))->get('https://www.omdbapi.com/', ['apikey' => 'secret-omdb-key', 'i' => 'tt0133093']);
+            self::fail('no exception');
+        } catch (UnreachableException $e) {
+            self::assertSame('OMDb could not be reached for GET /: Could not resolve host: www.omdbapi.com.', $e->getMessage());
+            self::assertStringNotContainsString('secret-omdb-key', $e->getMessage());
+        }
+    }
 }

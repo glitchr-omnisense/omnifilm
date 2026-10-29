@@ -12,7 +12,8 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
  * provider's headers on every request, a 404 read as "not known" (null),
  * any other error status as a ProviderException naming the path only (never
  * the query, where a key may sit), a network failure as an
- * UnreachableException.
+ * UnreachableException naming the path only too, with the HTTP client's
+ * reason without the address it quotes (reason()).
  */
 final class JsonClient
 {
@@ -49,7 +50,7 @@ final class JsonClient
             }
             $body = $response->getContent(false);
         } catch (ExceptionInterface $e) {
-            throw new UnreachableException(\sprintf('%s could not be reached for %s: %s', $this->provider, $what, $e->getMessage()), 0, $e);
+            throw new UnreachableException(\sprintf('%s could not be reached for %s: %s', $this->provider, $what, self::reason($e->getMessage())), 0, $e);
         }
         if ($status >= 400) {
             throw ProviderException::answered($this->provider, $what, $status, $body);
@@ -57,5 +58,26 @@ final class JsonClient
         $data = json_decode($body, true);
 
         return \is_array($data) ? new Data($data) : throw ProviderException::answered($this->provider, $what, $status, 'The body is not JSON.');
+    }
+
+    /**
+     * An HTTP client's message without the addresses it quotes: Symfony's
+     * ' for "<url>"' dropped, any other address cut to its scheme, host and
+     * path (no credentials, no query, no fragment).
+     */
+    public static function reason(string $message): string
+    {
+        $message = (string) preg_replace('~\s+for\s+"[a-z][a-z0-9+.\-]*://[^"]*"~i', '', $message);
+        $message = (string) preg_replace_callback('~[a-z][a-z0-9+.\-]*://[^\s"\'<>]+~i', static function (array $match): string {
+            $parts = parse_url($match[0]);
+            if (false === $parts || !isset($parts['scheme'], $parts['host'])) {
+                return '(an address)';
+            }
+
+            return $parts['scheme'].'://'.$parts['host'].(isset($parts['port']) ? ':'.$parts['port'] : '').($parts['path'] ?? '');
+        }, $message);
+        $message = rtrim(trim($message), '.');
+
+        return '' !== $message ? $message.'.' : 'no reason given.';
     }
 }

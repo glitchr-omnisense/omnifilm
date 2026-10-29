@@ -56,8 +56,6 @@ There is no conformance suite shared by the providers: each tests its own mappin
 
 Listed where the behaviour is described, and in the family's defects list:
 
-- A network error's message holds the whole URL: OMDb's key, and TMDB's with `api_key`
-  ([Errors](errors.md#the-messages)).
 - OMDb's "Too many results." is a `ProviderException`, not an empty search
   ([Search](usage-search.md#edge-cases)).
 - TMDB's `attribution` is not the wording TMDB's terms ask for ([Models](models.md#capabilities)).

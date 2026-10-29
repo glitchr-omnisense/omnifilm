@@ -20,12 +20,13 @@ Not an exception: a work, a series or a season the provider does not know - a 40
 
 ## The messages
 
-Seen in the [harness](harness.md) on 2026-10-26, the network ones in a container with no network:
+Seen in the [harness](harness.md) on 2026-10-26, the network ones in a container with no network
+(those three as they read since 2026-10-29, the address the HTTP client quotes left out):
 
 ```
-omdb network       UnreachableException: OMDb could not be reached for GET /: Could not resolve host: www.omdbapi.com (Could not contact DNS servers) for "https://www.omdbapi.com/?apikey=SECRET-KEY&r=json&i=tt0133093&plot=full".
-tmdb network       UnreachableException: TMDB could not be reached: Could not resolve host: api.themoviedb.org (Could not contact DNS servers) for "https://api.themoviedb.org/3/movie/603?api_key=SECRET-KEY&append_to_response=credits%2Cexternal_ids&language=en-US".
-trakt network      UnreachableException: Trakt could not be reached for GET /movies/481: Could not resolve host: api.trakt.tv (Could not contact DNS servers) for "https://api.trakt.tv/movies/481?extended=full".
+omdb network       UnreachableException: OMDb could not be reached for GET /: Could not resolve host: www.omdbapi.com (Could not contact DNS servers).
+tmdb network       UnreachableException: TMDB could not be reached for GET /3/movie/603: Could not resolve host: api.themoviedb.org (Could not contact DNS servers).
+trakt network      UnreachableException: Trakt could not be reached for GET /movies/481: Could not resolve host: api.trakt.tv (Could not contact DNS servers).
 omdb too many      ProviderException: OMDb answered an error for GET /. Too many results.
 omdb bad key       ProviderException: OMDb answered 401 for GET /. {"Response":"False","Error":"Invalid API key!"}
 omdb limit         ProviderException: OMDb answered 401 for GET /. {"Response":"False","Error":"Request limit reached!"}
@@ -49,12 +50,10 @@ A `ProviderException` names the provider, the status (or what stood for it: `an 
 characters. Its code is 0: the status is in the message only. The path never carries the query, so
 a key sent there stays out of `ProviderException`s.
 
-> [!WARNING]
-> Known defect: an `UnreachableException` quotes the HTTP client's message, which names the whole
-> URL - so OMDb's `apikey` and TMDB's `api_key` (when the `api_key` option is used rather than
-> `token`) appear in it, as above, where `JsonClient`'s docblock promises a message that never
-> names the query, where a key may sit. Keep these messages out of pages and shared logs; prefer
-> TMDB's `token`, which travels in a header.
+An `UnreachableException` names the method and the path too, then the HTTP client's reason without
+the address it quotes (`JsonClient::reason()`): OMDb's `apikey` and TMDB's `api_key` stay out of
+it. Its previous exception, the HTTP client's, keeps the client's own message, URL included: a log
+that writes the whole chain writes it too.
 
 ## What to catch where
 

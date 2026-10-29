@@ -21,8 +21,8 @@ framework-free).
    `ProviderException`/`UnreachableException`, no key in a `ProviderException`'s message) and
    answers are read with `Http\Data` (`string()`, `int()`, `date()`, `list()`, `strings()`), so
    PHPStan at its highest level holds without trusting the provider's JSON. A key goes in a header
-   when the service accepts one: a network error's message quotes the whole URL
-   ([Errors](errors.md#the-messages)).
+   when the service accepts one: messages leave the query out ([Errors](errors.md#the-messages)),
+   logs of the HTTP client and the previous exception do not.
 4. **Tests**: recorded answers in `Tests/Fixtures` (captured from the service when it needs no
    key, trimmed; written after its reference otherwise, and said so), a `BareTest` extending
    `Testing\BareTestCase`, a `LiveTest` in the group `live` for a keyless service only.
